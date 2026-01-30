@@ -12,8 +12,9 @@ class Publisher(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
+    // TODO clarify suspend + @Scheduled
     @Scheduled(fixedRateString = "\${outbox.publish.interval}")
-    fun publish() {
+    suspend fun publish() {
         val records: List<OutboxRecord> = outboxRepository.selectUnpublished(100)
         // Batch publish records
         log.info("Published {} records", records.size)
