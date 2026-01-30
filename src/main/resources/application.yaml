@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: r2dbc-coroutines-demo
+  datasource:
+    url: jdbc:postgresql://localhost:15433/postgres
+    username: postgres
+    password: secret
+outbox:
+  publish:
+    interval: PT0.1S
