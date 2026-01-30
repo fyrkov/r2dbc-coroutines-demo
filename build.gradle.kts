@@ -20,16 +20,26 @@ repositories {
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
-	implementation("org.springframework.boot:spring-boot-starter-jooq")
+
+	// r2dbc runtime
+	implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+	implementation("org.postgresql:r2dbc-postgresql")
+
+	// jooq (reactive execution)
+	implementation("org.jooq:jooq")
+	implementation("org.jooq:jooq-kotlin-coroutines")
+
+	// flyway = jdbc
 	implementation("org.springframework.boot:spring-boot-starter-flyway")
 	implementation("org.flywaydb:flyway-database-postgresql")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-
 	runtimeOnly("org.postgresql:postgresql")
+
+	implementation("org.jetbrains.kotlin:kotlin-reflect")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:testcontainers-postgresql")
+	testImplementation("org.testcontainers:testcontainers-r2dbc")
 }
 
 kotlin {

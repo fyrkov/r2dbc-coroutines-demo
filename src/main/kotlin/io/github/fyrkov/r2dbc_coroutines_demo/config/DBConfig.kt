@@ -1,20 +1,16 @@
 package io.github.fyrkov.r2dbc_coroutines_demo.config
 
-import org.flywaydb.core.Flyway
-import org.springframework.boot.ApplicationRunner
+import io.r2dbc.spi.ConnectionFactory
+import org.jooq.DSLContext
+import org.jooq.SQLDialect
+import org.jooq.impl.DSL
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import javax.sql.DataSource
 
 @Configuration
 class DBConfig {
 
     @Bean
-    fun migrate(dataSource: DataSource) = ApplicationRunner {
-        Flyway.configure()
-            .dataSource(dataSource)
-            .baselineOnMigrate(true)
-            .load()
-            .migrate()
-    }
+    fun dslContext(cf: ConnectionFactory): DSLContext =
+        DSL.using(cf, SQLDialect.POSTGRES)
 }

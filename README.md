@@ -2,6 +2,14 @@
 
 This repository is a small demo of the with reactive R2DBC drivers and coroutines in Spring Boot.
 
+
+## Notes
+
+#### Jooq
+Jooq supports R2DBC drivers since v3.15 https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/
+
+`spring-boot-starter-jooq` is not compatible, uses JDBC.
+
 ## How to run locally
 
 ### Dependencies
@@ -39,9 +47,6 @@ Access the app at http://localhost:8080/
 The table is partitioned by `published_at` to efficiently manage published and unpublished records.
 
 ## What is not in the scope of this POC
-
-
-## Notes
 
 
 ## Links 
