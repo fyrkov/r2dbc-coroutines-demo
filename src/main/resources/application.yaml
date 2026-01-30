@@ -16,4 +16,4 @@ spring:
 
 outbox:
   publish:
-    interval: PT0.1S
+    interval: PT1S
