@@ -10,6 +10,29 @@ Jooq supports R2DBC drivers since v3.15 https://blog.jooq.org/reactive-sql-with-
 
 `spring-boot-starter-jooq` is not compatible, uses JDBC.
 
+A new DSL Context object has to be provided like
+```kotlin
+implementation("org.jooq:jooq")
+implementation("org.jooq:jooq-kotlin-coroutines")
+```
+```kotlin
+@Bean
+fun dslContext(cf: io.r2dbc.spi.ConnectionFactory): org.jooq.DSLContext =
+    DSL.using(cf, SQLDialect.POSTGRES)
+```
+
+Flyway has to be configured separately now to have its own separate jdbc connection from configs like:
+```yaml
+spring:
+  flyway:
+    url: jdbc:postgresql://...
+```
+
+Testcontainers have to be configured to work with r2dbc:
+```kotlin
+testImplementation("org.testcontainers:testcontainers-r2dbc")
+```
+
 ## How to run locally
 
 ### Dependencies
