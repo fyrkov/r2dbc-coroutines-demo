@@ -21,6 +21,7 @@ fun dslContext(cf: io.r2dbc.spi.ConnectionFactory): org.jooq.DSLContext =
     DSL.using(cf, SQLDialect.POSTGRES)
 ```
 
+#### Flyway
 Flyway has to be configured separately now to have its own separate jdbc connection from configs like:
 ```yaml
 spring:
@@ -28,10 +29,50 @@ spring:
     url: jdbc:postgresql://...
 ```
 
+#### Testcontainers
 Testcontainers have to be configured to work with r2dbc:
 ```kotlin
 testImplementation("org.testcontainers:testcontainers-r2dbc")
 ```
+
+Now when the preparation isready, lets see how does the code change?
+```kotlin
+    fun insert(aggregateType: String, aggregateId: String, payload: String): Long {
+        return dsl.insertInto(table("outbox"))
+            ...
+            .fetchSingle()
+```
+becomes
+```kotlin
+    suspend fun insert(aggregateType: String, aggregateId: String, payload: String): Long {
+        return dsl.insertInto(table)
+            ...
+            .awaitFirst()
+```
+
+
+```kotlin
+    fun selectUnpublished(limit: Int): List<OutboxRecord> {
+        return dsl.selectFrom(table)
+            .where(field("published_at").isNull())
+            .orderBy(field("id"))
+            .limit(limit)
+            .fetch { deser(it) }
+    }
+```
+becomes either a suspending function
+```kotlin
+    suspend fun selectUnpublished(limit: Int): List<OutboxRecord> {
+    val query = dsl.selectFrom(table("outbox"))
+        .where(field("published_at").isNull())
+        .orderBy(field("id"))
+        .limit(limit)
+    return Flux.from(query)
+        .map { deser(it) }
+        .collectList()
+        .awaitSingle()
+}
+``` 
 
 ## How to run locally
 
@@ -74,3 +115,4 @@ The table is partitioned by `published_at` to efficiently manage published and u
 
 ## Links 
 * Forked from the https://github.com/fyrkov/outbox-demo
+* Introduction of R2DBC to Jooq: https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/
