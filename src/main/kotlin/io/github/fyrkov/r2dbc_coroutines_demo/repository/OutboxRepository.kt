@@ -1,12 +1,15 @@
 package io.github.fyrkov.r2dbc_coroutines_demo.repository
 
 import io.github.fyrkov.r2dbc_coroutines_demo.domain.OutboxRecord
+import kotlinx.coroutines.reactive.awaitFirst
+import kotlinx.coroutines.reactive.awaitSingle
 import org.jooq.DSLContext
 import org.jooq.JSONB
 import org.jooq.Record
 import org.jooq.impl.DSL.field
 import org.jooq.impl.DSL.table
 import org.springframework.stereotype.Repository
+import reactor.core.publisher.Flux
 import java.time.Instant
 
 @Repository
@@ -14,22 +17,34 @@ class OutboxRepository(
     private val dsl: DSLContext,
 ) {
 
-    fun insert(aggregateType: String, aggregateId: String, payload: String): Long {
+    suspend fun insert(aggregateType: String, aggregateId: String, payload: String): Long {
         return dsl.insertInto(table("outbox"))
             .set(field("aggregate_type", String::class.java), aggregateType)
             .set(field("aggregate_id", String::class.java), aggregateId)
             .set(field("payload", JSONB::class.java), JSONB.valueOf(payload))
             .returning(field("id"))
-            .fetchSingle()
+            .awaitFirst()
             .get(field("id"), Long::class.java)
     }
 
-    fun selectUnpublished(limit: Int): List<OutboxRecord> {
-        return dsl.selectFrom(table("outbox"))
+//    fun selectUnpublished(limit: Int): Flux<OutboxRecord> {
+//        return Flux.from(
+//            dsl.selectFrom(table)
+//                .where(field("published_at").isNull())
+//                .orderBy(field("id"))
+//                .limit(limit)
+//        ).map { deser(it) }
+//    }
+
+    suspend fun selectUnpublished(limit: Int): List<OutboxRecord> {
+        val query = dsl.selectFrom(table("outbox"))
             .where(field("published_at").isNull())
             .orderBy(field("id"))
             .limit(limit)
-            .fetch { deser(it) }
+        return Flux.from(query)
+            .map { deser(it) }
+            .collectList()
+            .awaitSingle()
     }
 
     private fun deser(record: Record): OutboxRecord = OutboxRecord(

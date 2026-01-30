@@ -1,21 +1,20 @@
 package io.github.fyrkov.r2dbc_coroutines_demo.repository
 
 import io.github.fyrkov.r2dbc_coroutines_demo.AbstractIntegrationTest
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.test.annotation.Rollback
-import org.springframework.transaction.annotation.Transactional
 
-@Transactional
-@Rollback
+//@Transactional
+//@Rollback
 class OutboxRepositoryIntegrationTest @Autowired constructor(
     private val outboxRepository: OutboxRepository,
 ) : AbstractIntegrationTest() {
 
 
     @Test
-    fun `should insert a record in the outbox`() {
+    fun `should insert a record in the outbox`() = runTest {
         // given
         val aggregateType = "account"
         val aggregateId = "123"
@@ -29,7 +28,7 @@ class OutboxRepositoryIntegrationTest @Autowired constructor(
     }
 
     @Test
-    fun `should select unpublished records`() {
+    fun `should select unpublished records`() = runTest {
         // when
         val records = outboxRepository.selectUnpublished(10)
 
