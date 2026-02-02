@@ -9,8 +9,8 @@ import kotlinx.coroutines.reactive.awaitSingle
 import org.jooq.DSLContext
 import org.jooq.JSONB
 import org.jooq.Record
-import org.jooq.impl.DSL.*
-import org.jooq.kotlin.coroutines.transactionCoroutine
+import org.jooq.impl.DSL.field
+import org.jooq.impl.DSL.table
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 import java.time.Instant
@@ -19,12 +19,6 @@ import java.time.Instant
 class OutboxRepository(
     private val dsl: DSLContext,
 ) {
-
-    suspend fun <T> inTx(block: suspend OutboxRepository.() -> T): T =
-        dsl.transactionCoroutine { cfg ->
-            val txRepo = OutboxRepository(using(cfg))
-            txRepo.block()
-        }
 
     suspend fun insert(aggregateType: String, aggregateId: String, payload: String): Long {
         return dsl.insertInto(table("outbox"))
