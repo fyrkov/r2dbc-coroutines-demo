@@ -91,22 +91,8 @@ or a function that returns a Flow
 ```
 
 #### Transaction management
-Spring `@Transactional` annotation is not supported with R2DBC.
-So we have to build a transaction manually using the Jooq DSLContext.
-Example:
-```kotlin
-suspend fun <T> inTx(block: suspend OutboxRepository.() -> T): T =
-    dsl.transactionCoroutine { cfg ->
-        val txRepo = OutboxRepository(using(cfg))
-        txRepo.block()
-    }
-```
-Usage:
-```kotlin
-outboxRepository.inTx {
-    val records: List<OutboxRecord> = selectUnpublished(100)
-}
-```
+[Since Spring 5.3](https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-5.3-Release-Notes), the Spring `@Transactional` is aware of Kotlin Coroutines.
+When a suspend function is marked `@Transactional`, Spring correctly manages the transaction context within the CoroutineContext.
 
 ## How to run locally
 
