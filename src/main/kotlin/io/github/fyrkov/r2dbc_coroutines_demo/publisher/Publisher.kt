@@ -17,6 +17,7 @@ class Publisher(
     suspend fun publish() {
         outboxRepository.inTx {
             val records: List<OutboxRecord> = selectUnpublished(100)
+            // FIXME: Dont do publication inside a transaction!
             log.info("Published {} records", records.size)
         }
     }
