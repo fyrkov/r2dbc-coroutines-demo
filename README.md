@@ -93,6 +93,7 @@ or a function that returns a Flow
 #### Transaction management
 [Since Spring 5.3](https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-5.3-Release-Notes), the Spring `@Transactional` is aware of Kotlin Coroutines.
 When a suspend function is marked `@Transactional`, Spring correctly manages the transaction context within the CoroutineContext.
+NB: `@Transactional` in tests still is loking for JDBC Data source and does not work correctly. 
 
 ## How to run locally
 
