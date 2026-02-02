@@ -95,6 +95,9 @@ or a function that returns a Flow
 When a suspend function is marked `@Transactional`, Spring correctly manages the transaction context within the CoroutineContext.
 NB: `@Transactional` in tests still is loking for JDBC Data source and does not work correctly. 
 
+####  Scheduling
+Starting with Spring Framework 6.1, `@Scheduled` officially supports Kotlin suspend functions.
+
 ## How to run locally
 
 ### Dependencies

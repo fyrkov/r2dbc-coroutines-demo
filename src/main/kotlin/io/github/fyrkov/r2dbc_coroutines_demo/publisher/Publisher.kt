@@ -13,7 +13,6 @@ class Publisher(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    // TODO clarify suspend + @Scheduled
     @Scheduled(fixedRateString = "\${outbox.publish.interval}")
     @Transactional
     suspend fun publish() {
