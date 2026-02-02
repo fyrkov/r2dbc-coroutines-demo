@@ -15,8 +15,9 @@ class Publisher(
     // TODO clarify suspend + @Scheduled
     @Scheduled(fixedRateString = "\${outbox.publish.interval}")
     suspend fun publish() {
-        val records: List<OutboxRecord> = outboxRepository.selectUnpublished(100)
-        // Batch publish records
-        log.info("Published {} records", records.size)
+        outboxRepository.inTx {
+            val records: List<OutboxRecord> = outboxRepository.selectUnpublished(100)
+            log.info("Published {} records", records.size)
+        }
     }
 }
