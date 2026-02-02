@@ -5,6 +5,7 @@ import io.github.fyrkov.r2dbc_coroutines_demo.repository.OutboxRepository
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 
 @Component
 class Publisher(
@@ -14,11 +15,10 @@ class Publisher(
 
     // TODO clarify suspend + @Scheduled
     @Scheduled(fixedRateString = "\${outbox.publish.interval}")
+    @Transactional
     suspend fun publish() {
-        outboxRepository.inTx {
-            val records: List<OutboxRecord> = selectUnpublished(100)
-            // FIXME: Dont do publication inside a transaction!
-            log.info("Published {} records", records.size)
-        }
+        val records: List<OutboxRecord> = outboxRepository.selectUnpublished(100)
+        // FIXME: Dont do publication inside a transaction!
+        log.info("Published {} records", records.size)
     }
 }
