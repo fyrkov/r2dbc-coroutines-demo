@@ -16,7 +16,7 @@ class Publisher(
     @Scheduled(fixedRateString = "\${outbox.publish.interval}")
     suspend fun publish() {
         outboxRepository.inTx {
-            val records: List<OutboxRecord> = outboxRepository.selectUnpublished(100)
+            val records: List<OutboxRecord> = selectUnpublished(100)
             log.info("Published {} records", records.size)
         }
     }

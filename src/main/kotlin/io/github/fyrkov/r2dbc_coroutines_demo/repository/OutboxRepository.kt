@@ -20,10 +20,10 @@ class OutboxRepository(
     private val dsl: DSLContext,
 ) {
 
-    suspend fun <T> inTx(block: suspend (OutboxRepository) -> T): T =
+    suspend fun <T> inTx(block: suspend OutboxRepository.() -> T): T =
         dsl.transactionCoroutine { cfg ->
             val txRepo = OutboxRepository(using(cfg))
-            block(txRepo)
+            txRepo.block()
         }
 
     suspend fun insert(aggregateType: String, aggregateId: String, payload: String): Long {

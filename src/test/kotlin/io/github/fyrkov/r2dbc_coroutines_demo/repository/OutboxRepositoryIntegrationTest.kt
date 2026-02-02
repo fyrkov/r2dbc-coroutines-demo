@@ -3,6 +3,7 @@ package io.github.fyrkov.r2dbc_coroutines_demo.repository
 import io.github.fyrkov.r2dbc_coroutines_demo.AbstractIntegrationTest
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
+import org.jooq.DSLContext
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 //@Rollback
 class OutboxRepositoryIntegrationTest @Autowired constructor(
     private val outboxRepository: OutboxRepository,
+    private val dsl: DSLContext,
 ) : AbstractIntegrationTest() {
 
 
@@ -22,10 +24,13 @@ class OutboxRepositoryIntegrationTest @Autowired constructor(
         val payload = """{"balance":100}"""
 
         // when
-        val id = outboxRepository.insert(aggregateType, aggregateId, payload)
-
-        // then
-        assertNotNull(id)
+        outboxRepository.inTx {
+            try {
+                val id = outboxRepository.insert(aggregateType, aggregateId, payload)
+                assertNotNull(id)
+                throw RuntimeException()
+            } catch (_: RuntimeException) {}
+        }
     }
 
     @Test
