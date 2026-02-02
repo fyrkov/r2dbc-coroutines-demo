@@ -1,6 +1,9 @@
 package io.github.fyrkov.r2dbc_coroutines_demo.repository
 
 import io.github.fyrkov.r2dbc_coroutines_demo.domain.OutboxRecord
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.reactive.asFlow
 import kotlinx.coroutines.reactive.awaitFirst
 import kotlinx.coroutines.reactive.awaitSingle
 import org.jooq.DSLContext
@@ -27,15 +30,6 @@ class OutboxRepository(
             .get(field("id"), Long::class.java)
     }
 
-//    fun selectUnpublished(limit: Int): Flux<OutboxRecord> {
-//        return Flux.from(
-//            dsl.selectFrom(table)
-//                .where(field("published_at").isNull())
-//                .orderBy(field("id"))
-//                .limit(limit)
-//        ).map { deser(it) }
-//    }
-
     suspend fun selectUnpublished(limit: Int): List<OutboxRecord> {
         val query = dsl.selectFrom(table("outbox"))
             .where(field("published_at").isNull())
@@ -45,6 +39,16 @@ class OutboxRepository(
             .map { deser(it) }
             .collectList()
             .awaitSingle()
+    }
+
+    fun selectUnpublished2(limit: Int): Flow<OutboxRecord> {
+        val query = dsl.selectFrom(table("outbox"))
+            .where(field("published_at").isNull())
+            .orderBy(field("id"))
+            .limit(limit)
+        return Flux.from(query)
+            .asFlow()
+            .map { deser(it) }
     }
 
     private fun deser(record: Record): OutboxRecord = OutboxRecord(

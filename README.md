@@ -35,14 +35,18 @@ Testcontainers have to be configured to work with r2dbc:
 testImplementation("org.testcontainers:testcontainers-r2dbc")
 ```
 
-Now when the preparation isready, lets see how does the code change?
+Now when the preparation is ready, let’s see how the code changes?
+In jOOQ reactive mode (R2DBC), a jOOQ Query implements org.reactivestreams.Publisher<Record>.
+Publisher comes from Reactive Streams, which is a tiny, standalone spec:
+
+
 ```kotlin
     fun insert(aggregateType: String, aggregateId: String, payload: String): Long {
         return dsl.insertInto(table("outbox"))
             ...
             .fetchSingle()
 ```
-becomes
+becomes a suspending function
 ```kotlin
     suspend fun insert(aggregateType: String, aggregateId: String, payload: String): Long {
         return dsl.insertInto(table)
@@ -50,7 +54,7 @@ becomes
             .awaitFirst()
 ```
 
-
+A select query
 ```kotlin
     fun selectUnpublished(limit: Int): List<OutboxRecord> {
         return dsl.selectFrom(table)
@@ -72,7 +76,19 @@ becomes either a suspending function
         .collectList()
         .awaitSingle()
 }
-``` 
+```
+or a function that returns a Flow
+```kotlin
+    fun selectUnpublished2(limit: Int): Flow<OutboxRecord> {
+    val query = dsl.selectFrom(table("outbox"))
+        .where(field("published_at").isNull())
+        .orderBy(field("id"))
+        .limit(limit)
+    return Flux.from(query)
+        .asFlow()
+        .map { deser(it) }
+}
+```
 
 ## How to run locally
 
