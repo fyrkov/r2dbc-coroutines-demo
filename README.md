@@ -13,6 +13,7 @@ R2DBC drivers are database drivers that implement reactive, non-blocking access 
 In simple terms, they are the reactive alternative to JDBC drivers.
 They have been around since about 2019 and have been steadily gaining popularity since then.
 However, JDBC remains dominant in most applications because of its maturity, stability and simplicity.
+This demo also aims to show that R2DBC usage can be straightforward in practice.
 
 ### Jooq
 In this demo we Jooq to interact with the database.
