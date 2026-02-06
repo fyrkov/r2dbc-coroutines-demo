@@ -1,6 +1,6 @@
 # R2DBC and coroutines
 
-![image.png](image.png)
+![r2dbc_vzhuh.png](r2dbc_vzhuh.png)
 
 ## Notes
 
@@ -121,44 +121,6 @@ NB: `@Transactional` in tests still is loking for JDBC Data source and does not 
 ###  Scheduling
 [Starting with Spring 6.1](https://docs.spring.io/spring-framework/reference/integration/scheduling.html#scheduling-annotation-support-scheduled-reactive),
 `@Scheduled` officially supports Kotlin suspend functions.
-
-## How to run locally
-
-### Dependencies
-
-* JDK >= 21
-* Docker
-
-For running locally, start DB:
-
-```bash
-docker compose up -d
-```
-
-Fixed port 15433 is used which must be available!
-
-Start the app:
-
-```
-./gradlew bootRun
-```
-
-Access the app at http://localhost:8080/
-
-## Data model
-
-| Column           | Type           | Nullable | Description                                   |
-|:-----------------|:---------------|:---------|:----------------------------------------------|
-| `id`             | `bigint`       | No       | Primary key, auto-generated                   |
-| `aggregate_type` | `varchar(255)` | No       | Type of the aggregate                         |
-| `aggregate_id`   | `varchar(255)` | No       | ID of the aggregate                           |
-| `payload`        | `jsonb`        | No       | Event data in JSON format                     |
-| `created_at`     | `timestamptz`  | No       | Creation timestamp                            |
-| `published_at`   | `timestamptz`  | Yes      | Publication timestamp (NULL if not published) |
-
-The table is partitioned by `published_at` to efficiently manage published and unpublished records.
-
-## What is not in the scope of this POC
 
 
 ## Links
