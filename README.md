@@ -15,9 +15,13 @@ They have been around since about 2019 and have been steadily gaining popularity
 However, JDBC remains dominant in most applications because of its maturity, stability and simplicity.
 This demo also aims to show that R2DBC usage can be straightforward in practice.
 
-### Jooq
-In this demo we Jooq to interact with the database.
-Jooq supports R2DBC drivers [since v3.15](https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/)
+### Spring
+Spring provides via `spring-boot-starter-data-r2dbc` the basic reactive tools to work with R2DBC drivers.
+It also transitively includes the Project Reactor library, which provides the reactive types (Mono, Flux) and runtime used by Spring’s reactive APIs.
+
+### JOOQ
+In this demo we jOOQ to interact with the database.
+jOOQ supports R2DBC drivers [since v3.15](https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/)
 
 The `spring-boot-starter-jooq` starter is not compatible because it uses JDBC.
 
@@ -48,7 +52,7 @@ testImplementation("org.testcontainers:testcontainers-r2dbc")
 
 With the setup in place, let’s look at what changes in the code.
 
-In jOOQ reactive mode (R2DBC), a jOOQ Query returns `org.reactivestreams.Publisher<Record>`. 
+In reactive mode, a jOOQ Query returns `org.reactivestreams.Publisher<Record>`. 
 Publisher is defined by Reactive Streams, a standalone, technology-agnostic spec for asynchronous stream processing.
 Project Reactor is a popular Java implementation of this spec.
 
@@ -162,4 +166,4 @@ The table is partitioned by `published_at` to efficiently manage published and u
 * Base for the demo is forked from the https://github.com/fyrkov/outbox-demo
 * Reactive Streams specification: https://www.reactive-streams.org/
 * Project Reactor https://projectreactor.io/docs
-* Introduction of R2DBC to Jooq: https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/
+* Introduction of R2DBC to jOOQ: https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/
