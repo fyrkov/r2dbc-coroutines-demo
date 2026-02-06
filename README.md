@@ -159,7 +159,7 @@ The table is partitioned by `published_at` to efficiently manage published and u
 
 
 ## Links 
-* Forked from the https://github.com/fyrkov/outbox-demo
+* Base for the demo is forked from the https://github.com/fyrkov/outbox-demo
 * Reactive Streams specification: https://www.reactive-streams.org/
 * Project Reactor https://projectreactor.io/docs
 * Introduction of R2DBC to Jooq: https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/
