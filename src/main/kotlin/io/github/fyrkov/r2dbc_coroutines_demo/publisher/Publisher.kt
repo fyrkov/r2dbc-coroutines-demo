@@ -14,10 +14,12 @@ class Publisher(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Scheduled(fixedRateString = "\${outbox.publish.interval}")
-    @Transactional
+    @Transactional // FIXME: Dont do real publication inside a transaction!
     suspend fun publish() {
         val records: List<OutboxRecord> = outboxRepository.selectUnpublished(100)
-        // FIXME: Dont do real publication inside a transaction!
+
         log.info("Published {} records", records.size)
+
+        outboxRepository.updatePublishedAt(records.map { it.id })
     }
 }

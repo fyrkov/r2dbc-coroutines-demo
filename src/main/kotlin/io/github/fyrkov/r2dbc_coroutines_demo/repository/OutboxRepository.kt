@@ -41,6 +41,14 @@ class OutboxRepository(
             .awaitSingle()
     }
 
+    suspend fun updatePublishedAt(ids: List<Long>) {
+        if (ids.isEmpty()) return
+        val query = dsl.update(table("outbox"))
+            .set(field("published_at", Instant::class.java), Instant.now())
+            .where(field("id", Long::class.java).`in`(ids))
+        Flux.from(query).awaitFirst()
+    }
+
     fun selectUnpublishedAsFlow(limit: Int): Flow<OutboxRecord> {
         val query = dsl.selectFrom(table("outbox"))
             .where(field("published_at").isNull())
