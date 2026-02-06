@@ -124,7 +124,7 @@ NB: `@Transactional` in tests still is loking for JDBC Data source and does not 
 
 
 ## Links
-* Base for the demo is forked from the https://github.com/fyrkov/outbox-demo
+* Repository with the demo code: https://github.com/fyrkov/r2dbc-coroutines-demo
 * Reactive Streams specification: https://www.reactive-streams.org/
 * Project Reactor https://projectreactor.io/docs
 * Introduction of R2DBC to jOOQ: https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/
