@@ -46,7 +46,7 @@ class OutboxRepositoryIntegrationTest @Autowired constructor(
     @Test
     fun `should select unpublished records as a flow`() = runTestInTxAndRollback(dsl) {
         // when
-        val records = outboxRepository.selectUnpublished2(10).toList()
+        val records = outboxRepository.selectUnpublishedAsFlow(10).toList()
 
         // then
         assertEquals(10, records.count())

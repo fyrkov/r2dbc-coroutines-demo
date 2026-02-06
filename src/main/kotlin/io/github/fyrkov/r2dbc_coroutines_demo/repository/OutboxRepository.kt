@@ -41,7 +41,7 @@ class OutboxRepository(
             .awaitSingle()
     }
 
-    fun selectUnpublished2(limit: Int): Flow<OutboxRecord> {
+    fun selectUnpublishedAsFlow(limit: Int): Flow<OutboxRecord> {
         val query = dsl.selectFrom(table("outbox"))
             .where(field("published_at").isNull())
             .orderBy(field("id"))
