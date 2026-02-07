@@ -1,4 +1,4 @@
-# R2DBC and coroutines
+# Kotlin coroutines and R2DBC
 
 ![r2dbc_vzhuh.png](r2dbc_vzhuh.png)
 
