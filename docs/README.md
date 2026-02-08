@@ -26,7 +26,7 @@ In general, there is nothing wrong with mixing Reactor and coroutines or staying
 
 Now Let's look at the components involved.
 
-### How do we change the code?
+### How do we adapt the code?
 
 #### R2DBC
 R2DBC drivers are database drivers that implement reactive, non-blocking access to relational databases.
