@@ -3,9 +3,26 @@
 ![r2dbc_vzhuh.png](r2dbc_vzhuh.png)
 
 The purpose of this demo is to showcase the use of reactive R2DBC drivers together with Kotlin coroutines.
-Use of Project Reactor is kept to a minimum to maintain a coroutines-first approach.
+Usage of Project Reactor is kept to a minimum to maintain a coroutines-first approach.
 
-Let's look at the components involved.
+#### Why the hell do I need R2DBC?
+* non-blocking DB access so threads aren’t blocked on IO
+* higher concurrency with fewer threads
+* fits reactive stacks (WebFlux, reactive messaging)
+* useful for IO-heavy, high-load services
+
+#### Why the hell do I need coroutines?
+* Kotlin first-class feature with language-level support
+* write async code in simple sequential style
+* less cumbersome than Reactor's Flux/Mono chains
+
+#### Wait can I refrain from Reactor at all? 
+Other Spring reactive components used for end-to-end reactive applications, such as WebFlux or reactive Kafka client, are built on top of Reactor. 
+However, this does not mean that one must use Reactor in the application code.
+It is possible to write code with coroutines only (no Flux/Mono in app), and keep Reactor at the edges as an underlying runtime.
+In general, there is nothing wrong with mixing Reactor and coroutines or staying with coroutines only.
+
+Now Let's look at the components involved.
 
 ### R2DBC
 R2DBC drivers are database drivers that implement reactive, non-blocking access to relational databases.
@@ -15,7 +32,7 @@ However, JDBC remains dominant in most applications because of its maturity, sta
 This demo also aims to show that R2DBC usage can be straightforward in practice.
 
 ### Spring
-Spring provides via `spring-boot-starter-data-r2dbc` the basic reactive tools to work with R2DBC drivers.
+Spring provides the basic reactive tools to work with R2DBC drivers via the `spring-boot-starter-data-r2dbc`.
 It also transitively includes the Project Reactor library, which provides the reactive types (Mono, Flux) and runtime used by Spring’s reactive APIs.
 
 ### JOOQ
@@ -55,8 +72,8 @@ In reactive mode, a jOOQ Query returns `org.reactivestreams.Publisher<Record>`.
 Publisher is defined by Reactive Streams, a standalone, technology-agnostic spec for asynchronous stream processing.
 Project Reactor is a popular Java implementation of this spec.
 
-Kotlin coroutines use a different model with suspending functions and Flow,
-which are conceptually similar to Mono and Flux from Project Reactor.
+Kotlin coroutines use a different model with suspending functions and `Flow`,
+which are conceptually similar to `Mono` and `Flux` from Project Reactor.
 Kotlin also provides a bridge library, `kotlinx-coroutines-reactive`,
 that enables interoperability between Publisher (for example, a Flux from a jOOQ query) and coroutines.
 
@@ -116,11 +133,20 @@ fun selectUnpublishedAsFlow(limit: Int): Flow<OutboxRecord> {
 [Since Spring 5.3](https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-5.3-Release-Notes),
 the Spring `@Transactional` is aware of Kotlin coroutines.
 When a suspend function is marked `@Transactional`, Spring correctly manages the transaction context within the CoroutineContext.
-NB: `@Transactional` in tests still is loking for JDBC Data source and does not work correctly.
+NB: `@Transactional` in tests is looking still for JDBC Data source and does not work correctly if it is not configured.
 
 ###  Scheduling
 [Starting with Spring 6.1](https://docs.spring.io/spring-framework/reference/integration/scheduling.html#scheduling-annotation-support-scheduled-reactive),
 `@Scheduled` officially supports Kotlin suspend functions.
+
+### Note on Java virtual threads
+Java virtual threads also make blocking code scale much better by making threads cheap.
+They first appeared as a preview in Java 19 (Project Loom) and became stable in Java 21.
+
+They reduce the need for reactive style for scalability. 
+However, they are still blocking from the driver perspective (JDBC blocks sockets).
+
+In Spring Boot 3.2+ there is a config property  `spring.threads.virtual.enabled=true` to let the framework use them.
 
 
 ## Links
