@@ -171,8 +171,9 @@ In Spring Boot 3.2+ there is a config property  `spring.threads.virtual.enabled=
 ### Summary
 
 In this demo, we transformed a synchronous JDBC app into a reactive R2DBC one with relatively few changes and little effort.
+Further steps may include moving the remaining blocking parts to non-blocking alternatives and building a fully end-to-end reactive application.
 
-## Links
+### Links
 * Repository with the demo code: https://github.com/fyrkov/r2dbc-coroutines-demo
 * Reactive Streams specification: https://www.reactive-streams.org/
 * Project Reactor https://projectreactor.io/docs
