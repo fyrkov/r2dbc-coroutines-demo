@@ -26,7 +26,7 @@ In general, there is nothing wrong with mixing Reactor and coroutines or staying
 
 Now Let's look at the components involved.
 
-### How do we adapt the code?
+### Preparation of components
 
 #### R2DBC
 R2DBC drivers are database drivers that implement reactive, non-blocking access to relational databases.
@@ -66,18 +66,24 @@ fun dslContext(cf: io.r2dbc.spi.ConnectionFactory): org.jooq.DSLContext =
 ```
 
 #### Flyway
-Flyway has to be configured separately to have its own separate jdbc connection from configs like:
+Flyway does not support R2DBC drivers and therefore has to be configured separately to have its own separate jdbc connection from configs like:
 ```yaml
 spring:
   flyway:
     url: jdbc:postgresql://...
 ```
 
+This is fine because in Spring Boot, the Flyway datasource is separate from the application datasource by default.
+The Flyway datasource is used only to run migrations.
+The Flyway datasource does not interfere with the R2DBC setup.
+
 #### Testcontainers
-Testcontainers have to be configured to work with r2dbc:
+Testcontainers have to be configured to work with R2DBC:
 ```kotlin
 testImplementation("org.testcontainers:testcontainers-r2dbc")
 ```
+
+### How do we adapt the code?
 
 With the setup in place, let’s look at what changes in the code.
 
