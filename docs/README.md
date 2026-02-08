@@ -147,17 +147,19 @@ fun selectUnpublishedAsFlow(limit: Int): Flow<OutboxRecord> {
 }
 ```
 
+### Additional notes
+
 #### Transaction management
 [Since Spring 5.3](https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-5.3-Release-Notes),
 the Spring `@Transactional` is aware of Kotlin coroutines.
 When a suspend function is marked `@Transactional`, Spring correctly manages the transaction context within the CoroutineContext.
 NB: `@Transactional` in tests is looking still for JDBC Data source and does not work correctly if it is not configured.
 
-####  Scheduling
+#### Scheduling
 [Starting with Spring 6.1](https://docs.spring.io/spring-framework/reference/integration/scheduling.html#scheduling-annotation-support-scheduled-reactive),
 `@Scheduled` officially supports Kotlin suspend functions.
 
-### Note on Java virtual threads
+#### Note on Java virtual threads
 Java virtual threads also make blocking code scale much better by making threads cheap.
 They first appeared as a preview in Java 19 (Project Loom) and became stable in Java 21.
 
