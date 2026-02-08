@@ -2,6 +2,8 @@
 
 ![r2dbc_vzhuh.png](r2dbc_vzhuh.png)
 
+
+### Intro
 The purpose of this demo is to showcase the use of reactive R2DBC drivers together with Kotlin coroutines.
 Usage of Project Reactor is kept to a minimum to maintain a coroutines-first approach.
 
@@ -24,18 +26,20 @@ In general, there is nothing wrong with mixing Reactor and coroutines or staying
 
 Now Let's look at the components involved.
 
-### R2DBC
+### How do we change the code?
+
+#### R2DBC
 R2DBC drivers are database drivers that implement reactive, non-blocking access to relational databases.
 In simple terms, they are the reactive alternative to JDBC drivers.
 They have been around since about 2019 and have been steadily gaining popularity since then.
 However, JDBC remains dominant in most applications because of its maturity, stability and simplicity.
 This demo also aims to show that R2DBC usage can be straightforward in practice.
 
-### Spring
+#### Spring
 Spring provides the basic reactive tools to work with R2DBC drivers via the `spring-boot-starter-data-r2dbc`.
 It also transitively includes the Project Reactor library, which provides the reactive types (Mono, Flux) and runtime used by Spring’s reactive APIs.
 
-### JOOQ
+#### JOOQ
 In this demo we jOOQ to interact with the database.
 jOOQ supports R2DBC drivers [since v3.15](https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/)
 
@@ -52,7 +56,7 @@ fun dslContext(cf: io.r2dbc.spi.ConnectionFactory): org.jooq.DSLContext =
     DSL.using(cf, SQLDialect.POSTGRES)
 ```
 
-### Flyway
+#### Flyway
 Flyway has to be configured separately to have its own separate jdbc connection from configs like:
 ```yaml
 spring:
@@ -60,7 +64,7 @@ spring:
     url: jdbc:postgresql://...
 ```
 
-### Testcontainers
+#### Testcontainers
 Testcontainers have to be configured to work with r2dbc:
 ```kotlin
 testImplementation("org.testcontainers:testcontainers-r2dbc")
@@ -129,13 +133,13 @@ fun selectUnpublishedAsFlow(limit: Int): Flow<OutboxRecord> {
 }
 ```
 
-### Transaction management
+#### Transaction management
 [Since Spring 5.3](https://github.com/spring-projects/spring-framework/wiki/Spring-Framework-5.3-Release-Notes),
 the Spring `@Transactional` is aware of Kotlin coroutines.
 When a suspend function is marked `@Transactional`, Spring correctly manages the transaction context within the CoroutineContext.
 NB: `@Transactional` in tests is looking still for JDBC Data source and does not work correctly if it is not configured.
 
-###  Scheduling
+####  Scheduling
 [Starting with Spring 6.1](https://docs.spring.io/spring-framework/reference/integration/scheduling.html#scheduling-annotation-support-scheduled-reactive),
 `@Scheduled` officially supports Kotlin suspend functions.
 
@@ -143,7 +147,7 @@ NB: `@Transactional` in tests is looking still for JDBC Data source and does not
 Java virtual threads also make blocking code scale much better by making threads cheap.
 They first appeared as a preview in Java 19 (Project Loom) and became stable in Java 21.
 
-They reduce the need for reactive style for scalability. 
+They reduce the need for reactive style for scalability.
 However, they are still blocking from the driver perspective (JDBC blocks sockets).
 
 In Spring Boot 3.2+ there is a config property  `spring.threads.virtual.enabled=true` to let the framework use them.
