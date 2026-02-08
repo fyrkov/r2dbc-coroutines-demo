@@ -24,9 +24,8 @@ However, this does not mean that one must use Reactor in the application code.
 It is possible to write code with coroutines only (no Flux/Mono in app), and keep Reactor at the edges as an underlying runtime.
 In general, there is nothing wrong with mixing Reactor and coroutines or staying with coroutines only.
 
-Now Let's look at the components involved.
-
 ### Preparation of components
+Now Let's look at the components involved.
 
 #### R2DBC
 R2DBC drivers are database drivers that implement reactive, non-blocking access to relational databases.
