@@ -148,6 +148,9 @@ However, they are still blocking from the driver perspective (JDBC blocks socket
 
 In Spring Boot 3.2+ there is a config property  `spring.threads.virtual.enabled=true` to let the framework use them.
 
+### Summary
+
+In this demo, we transformed a synchronous JDBC app into a reactive R2DBC one with relatively few changes and little effort.
 
 ## Links
 * Repository with the demo code: https://github.com/fyrkov/r2dbc-coroutines-demo
