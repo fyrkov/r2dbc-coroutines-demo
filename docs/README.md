@@ -88,8 +88,8 @@ testImplementation("org.testcontainers:testcontainers-r2dbc")
 With the setup in place, let’s look at what changes in the code.
 
 In reactive mode, a jOOQ Query returns `org.reactivestreams.Publisher<Record>`.
-Publisher is defined by Reactive Streams, a standalone, technology-agnostic spec for asynchronous stream processing.
-Project Reactor is a popular Java implementation of this spec.
+Publisher is defined by _Reactive Streams_, a standalone, technology-agnostic spec for asynchronous stream processing.
+Project Reactor is just a popular Java implementation of this spec.
 
 Kotlin coroutines use a different model with suspending functions and `Flow`,
 which are conceptually similar to `Mono` and `Flux` from Project Reactor.
