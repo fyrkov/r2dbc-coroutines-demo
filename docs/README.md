@@ -91,10 +91,9 @@ In reactive mode, a jOOQ Query returns `org.reactivestreams.Publisher<Record>`.
 Publisher is defined by _Reactive Streams_, a standalone, technology-agnostic spec for asynchronous stream processing.
 Project Reactor is just a popular Java implementation of this spec.
 
-Kotlin coroutines use a different model with suspending functions and `Flow`,
-which are conceptually similar to `Mono` and `Flux` from Project Reactor.
-Kotlin also provides a bridge library, `kotlinx-coroutines-reactive`,
-that enables interoperability between Publisher (for example, a Flux from a jOOQ query) and coroutines.
+Kotlin coroutines use a different model with suspending functions and `Flow` type,
+which are conceptually similar to `Mono` and `Flux` types from Project Reactor.
+Jetbrains also provides a bridge library `kotlinx-coroutines-reactive` that enables interoperability between Publisher (for example, a Flux from a jOOQ query) and coroutines.
 
 
 A normal insert query
