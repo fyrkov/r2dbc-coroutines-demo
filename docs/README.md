@@ -2,10 +2,10 @@
 
 ![r2dbc_vzhuh.png](r2dbc_vzhuh.png)
 
-## Notes
-
 The purpose of this demo is to showcase the use of reactive R2DBC drivers together with Kotlin coroutines.
 Use of Project Reactor is kept to a minimum to maintain a coroutines-first approach.
+
+Let's look at the components involved.
 
 ### R2DBC
 R2DBC drivers are database drivers that implement reactive, non-blocking access to relational databases.
