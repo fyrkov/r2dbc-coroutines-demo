@@ -35,21 +35,30 @@ They have been around since about 2019 and have been steadily gaining popularity
 However, JDBC remains dominant in most applications because of its maturity, stability and simplicity.
 This demo also aims to show that R2DBC usage can be straightforward in practice.
 
+We will use the PostgreSQL driver for this demo:
+```kotlin
+implementation("org.postgresql:r2dbc-postgresql")
+```
+
 #### Spring
-Spring provides the basic reactive tools to work with R2DBC drivers via the `spring-boot-starter-data-r2dbc`.
-It also transitively includes the Project Reactor library, which provides the reactive types (Mono, Flux) and runtime used by Spring’s reactive APIs.
+Spring provides the basic reactive tools to work with R2DBC drivers via the
+```kotlin
+implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
+```
+It also transitively includes the Project Reactor library, which provides the reactive types and runtime.
 
 #### JOOQ
 In this demo we jOOQ to interact with the database.
 jOOQ supports R2DBC drivers [since v3.15](https://blog.jooq.org/reactive-sql-with-jooq-3-15-and-r2dbc/)
 
 The `spring-boot-starter-jooq` starter is not compatible because it uses JDBC.
-
-A DSL Context object has to be configured and provided like
+So we have to add 
 ```kotlin
 implementation("org.jooq:jooq")
 implementation("org.jooq:jooq-kotlin-coroutines")
 ```
+
+A DSL Context object has to be configured and provided like
 ```kotlin
 @Bean
 fun dslContext(cf: io.r2dbc.spi.ConnectionFactory): org.jooq.DSLContext =
