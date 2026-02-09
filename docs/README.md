@@ -3,7 +3,8 @@
 ![r2dbc_vzhuh.png](r2dbc_vzhuh.png)
 
 ## Intro
-The purpose of this demo is to showcase the use of reactive R2DBC drivers together with Kotlin coroutines.
+This article demonstrates how to use reactive R2DBC drivers with Kotlin coroutines. 
+To illustrate this, a typical outbox pattern implementation using Spring, Kotlin, PostgreSQL, and JDBC is reworked into a reactive form. 
 Usage of Project Reactor is kept to a minimum to maintain a coroutines-first approach.
 
 ### Why the hell do I need R2DBC?
@@ -17,7 +18,7 @@ Usage of Project Reactor is kept to a minimum to maintain a coroutines-first app
 * write async code in simple sequential style
 * less cumbersome than Reactor's Flux/Mono chains
 
-### Wait can I refrain from Reactor at all? 
+### Wait, can I refrain from Reactor at all? 
 Other Spring reactive components used for end-to-end reactive applications, such as WebFlux or reactive Kafka client, are built on top of Reactor. 
 However, this does not mean that one must use Reactor in the application code.
 It is possible to write code with coroutines only (no Flux/Mono in app), and keep Reactor at the edges as an underlying runtime.
@@ -158,17 +159,18 @@ NB: `@Transactional` in tests is looking still for JDBC Data source and does not
 `@Scheduled` officially supports Kotlin suspend functions.
 
 ### Note on Java virtual threads
-Java virtual threads also make blocking code scale much better by making threads cheap.
-They first appeared as a preview in Java 19 (Project Loom) and became stable in Java 21.
-
-They reduce the need for reactive style for scalability.
+Java virtual threads first appeared as a preview in Java 19 (Project Loom) and became stable in Java 21. 
+They also make blocking code scale much better by making threads lightweight and inexpensive. 
+In fact, virtual threads reduce the need for reactive style for scalability. 
 However, they are still blocking from the driver perspective (JDBC blocks sockets).
 
-In Spring Boot 3.2+ there is a config property  `spring.threads.virtual.enabled=true` to let the framework use them.
+In Spring Boot, virtual threads are disabled by default, but they can be enabled by setting `spring.threads.virtual.enabled=true`,
+allowing the framework to use them.
 
 ## Summary
 
 In this demo, we transformed a synchronous JDBC app into a reactive R2DBC one with relatively few changes and little effort.
+
 Further steps may include moving the remaining blocking parts to non-blocking alternatives and building a fully end-to-end reactive application.
 
 ## Links
